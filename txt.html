@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masai School</title>
+    <style>
+        #forms {
+      display: flex;
+      align-items: center;
+    }
+
+    form {
+      width: 10%;
+    }
+
+    #forms div {
+      flex: 1;
+      padding-left: 20%;
+    }
+
+    </style>
+</head>
+<body>
+    <h1>Masai Auth System</h1>
+    <div id="forms">
+    <div id="register">
+        <h1>Register</h1>
+        <form onsubmit="Register(event)">
+            Name: <br><input type="text" id="inp1" /><br>
+            Email: <br><input type="text" id="inp2" /><br>
+            Password:<br> <input type="text" id="inp3" /><br>
+            Username: <br><input type="text" id="inp4" /><br>
+            Mobile:<br> <input type="text" id="inp5" /><br>
+            Description:<br> <input type="text" id="inp6" /><br>
+            <input type="submit" />
+        </form>
+    </div>
+    <div id="Login">
+        <h1>Login</h1>
+        <form onsubmit="Login(event)">
+            Email:<br> <input type="text" id="inp7" /><br>
+            Password:<br> <input type="text" id="inp8" /><br>
+            <input type="submit" />
+        </form>
+    </div>
+    </div>
+</body>
+</html>
+<script>
+
+function Register(e) {
+    
+    e.preventDefault();
+
+    let formsData = {
+        name: document.getElementById("inp1").value,
+        email: document.getElementById("inp2").value,
+        password: document.getElementById("inp3").value,
+        username: document.getElementById("inp4").value,
+        mobile: document.getElementById("inp5").value,
+        description: document.getElementById("inp6").value
+    }
+
+    let body = JSON.stringify(formsData);
+
+    // console.log(formsData)
+
+    fetch("https://masai-api-mocker.herokuapp.com/auth/register",{
+        
+        method: "POST",
+        body: body,
+        headers:{
+            "Content-Type":"application/json"
+        }
+
+    })
+
+    .then((res)=>{
+        return res.json();
+    })
+    .then((res)=>{
+        console.log(res)
+    })
+    .catch((err)=>{
+        console.log("err:",err)
+    })
+
+}
+
+
+
+function Login(e) {
+
+    e.preventDefault();
+
+    let formsData = {
+        password: document.getElementById("inp8").value,
+        username: document.getElementById("inp7").value,
+    }
+
+    let body = JSON.stringify(formsData);
+
+    // console.log(formsData)
+
+    fetch("https://masai-api-mocker.herokuapp.com/auth/login", {
+
+        method: "POST",
+        body: body,
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+    })
+
+        .then((res) => {
+            return res.json();
+        })
+        .then((res) => {
+            console.log("res",res);
+            let u = formsData.username;
+            let t = res.token;
+            getmyProfile(u, t)
+        })
+        .catch((err) => {
+            console.log("err:", err);
+        })
+
+}
+
+
+function getmyProfile(username, token){
+    
+    fetch(`https://masai-api-mocker.herokuapp.com/user/${username}`, {
+
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    .then((res)=>{
+        return res.json();
+    }
+    )
+    .then((res)=>{
+        console.log(res);
+    })
+    .catch((err)=>{
+        console.log(err);
+    })
+}
+
+
+
+// http://api.serpstack.com/search?access_key=1afdfc2561c5bd9ca274daca6c402061&query=${query}
+</script>
