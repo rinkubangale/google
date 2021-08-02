@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body{
+            margin: 0%;
+        }
+        #navbar{
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            background-color: white;
+            position: absolute;
+            position: fixed;
+        }
+        #belownav{
+            top: 50px;
+            position: relative;
+            display: flex;
+        }
+        #belownav h6{
+            margin: 0%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #logo{
+            height: 50px;
+            display: flex;
+            width: 15%;
+            justify-content: center;
+            align-items: center;
+        }
+        #sign{
+            width: 30%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        #search{
+            width: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            /* border: 1px solid grey; */
+        }
+        #logo img, #search input, #search span,#sign span,#sign button{
+            height: 30px;
+        }
+        #sign button{
+            border: none;
+            background-color: transparent;
+        }
+        #sign button span{
+            background-color: transparent;
+            border: none;
+        }
+        #search div{
+            width: 80%;
+            border-radius: 30px;
+            display: flex;
+            font-size: 25px;
+            color: rgba(128, 128, 128, 0.3);
+            box-shadow: 0px 1px 5px rgb(184, 184, 184);
+            /* border: 1px solid black; */
+        }
+        #search input{
+            width: 90%;
+            margin-left: 15px;
+            /* border-radius: 30px; */
+            border: none;
+        }
+        #search input:focus{
+            outline: none;
+        }
+        
+        #search span{
+            display: flex;
+            width: 10%;
+            align-items: center;
+            border: none;
+        }
+        #search button{
+            background-color: transparent;
+            border: none;
+        }
+        #sign #btn{
+            background-color: rgb(0, 102, 255);
+            color: white;
+        }
+        #optLink{
+            width: 50%;
+            display: flex;
+            justify-content: flex-start;
+        }
+        #page{
+            display: flex;
+            justify-content: center;
+            margin-top: 100px;
+        }
+        #page #left{
+            display: flex;
+            width: 50%;
+        }
+        #page #right{
+            display: flex;
+            width: 20%;
+        }
+        button{
+            cursor: pointer;
+        }
+        .material-icons{
+            color: rgba(128, 128, 128, 0.7);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="home">
+        <div id="navbar">
+            <div id="logo">
+                <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" />
+            </div>
+            <div id="search">
+                <div>
+                    <input type="text" id="searchTxt" placeholder="Search.." />
+                    <button><span class="material-icons" >close</span></button>|
+                    <button><span class="material-icons">mic</span></button>
+                    <button><span class="material-icons" onclick="searchGoogle()">search</span></button>
+                </div>
+            </div>
+            <div id="sign">
+                <button><span class="material-icons">settings</span></button>
+                <button><span class="material-icons">apps</span></button>
+                <button id="btn" onclick="window.location.href = 'txt.html'">Sign out</button>
+            </div>
+        </div>
+        <div id="belownav">
+            <div id="logo"></div>
+            <div id="optLink">
+                <h6><span class="material-icons">search</span>All</h6>
+                <h6><span class="material-icons">books</span>Books</h6>
+                <h6><span class="material-icons">images</span>Images</h6>
+                <h6><span class="material-icons">smart_display</span>Videos</h6>
+                <h6><span class="material-icons">article</span>News</h6>
+                <h6><span class="material-icons">more_vert</span>More</h6>
+            </div>
+            <div id="sign"></div>
+            
+        </div>
+
+        <div id="page">
+            <div id="left"></div>
+            <div id="right"></div>
+        </div>
+
+    </div>
+</body>
+</html>
+<script>
+
+function searchGoogle(){
+
+    let query = document.getElementById("searchTxt").value;
+
+    let res = fetch(`http://api.serpstack.com/search?access_key=1afdfc2561c5bd9ca274daca6c402061&query=${query}`)
+        .then((res) => {
+            return res.json();
+        })
+        .then((res) => {
+            console.log("res:", res)
+            appendResult(res)
+        })
+        .catch((err) => {
+            console.log("err:", err)
+        })
+
+}
+
+function appendResult(d){
+
+
+    let home_left = document.getElementById("left");
+    let home_right = document.getElementById("right");
+
+    let left_div = document.createElement("div");
+    let right_div = document.createElement("div");
+
+    let data = d.organic_results;
+    data.forEach(({url, title}) => {
+
+        let data_div = document.createElement("div");
+
+        let p_data = document.createElement("p");
+        p_data.innerHTML = url;
+        p_data.style.cursor = "pointer"
+
+        let h_data = document.createElement("h6");
+        h_data.innerHTML = title;
+        p_data.style.cursor = "pointer"
+        h_data.style.color = "blue";
+
+        data_div.append(p_data, h_data);
+        left_div.append(data_div);
+    })
+
+    let newData = d.knowledge_graph;
+
+    let right_data_div = document.createElement("div");
+
+    let right_img_div = document.createElement("img");
+    right_img_div.src = newData.image_urls[0];
+
+
+    let right_d_data = document.createElement("p");
+    right_d_data.innerHTML = newData.title;
+
+    let right_p_data = document.createElement("p");
+    right_p_data.innerHTML = newData.description;
+
+    let right_h_data = document.createElement("h6");
+    right_h_data.innerHTML = newData.type;
+
+    right_data_div.append(right_img_div, right_d_data, right_h_data, right_p_data);
+    right_div.append(right_data_div);
+
+
+    home_left.append(left_div);
+    home_right.append(right_div);
+
+
+}
+
+
+
+</script>
